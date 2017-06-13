@@ -1,0 +1,32 @@
+<?- include('./header.ejs') ?>
+
+
+
+  <fieldset>
+    <legend>
+      <h1>编辑用户信息</h1>
+    </legend>
+    <form id="form" method="post" action="/editUser">
+      <p>
+        <strong>姓名：</strong>
+        <input type="text" name="name" required value="<?= user.name ?>">
+      </p>
+      <p>
+        <strong>年龄：</strong>
+        <input type="number" min="0" name="age" value="<?= user.age ?>">
+      </p>
+      <p>
+        <strong>性别：</strong>
+        <label><input type="radio" name="gender" value="男" value="男" <?= user.gender=='男'?'checked':'' ?>>&nbsp;男</label>&nbsp;&nbsp;&nbsp;&nbsp;
+        <label><input type="radio" name="gender" value="女" <?= user.gender=='女'?'checked':'' ?>>&nbsp;女</label>
+      </p>
+      <p>
+        <strong>地址：</strong>
+        <input type="text" name="address" value="<?= user.address ?>">
+      </p>
+      <input type="hidden" name="id" value="<?= user.id ?>">
+      <input type="submit" value="保存用户信息" class="btn btn-primary">
+    </form>
+  </fieldset>
+
+  <?- include('./footer.ejs') ?>

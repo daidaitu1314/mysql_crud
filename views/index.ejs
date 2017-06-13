@@ -1,0 +1,134 @@
+<?- include('./header.ejs') ?>
+
+  <h1>用户列表页面</h1>
+
+  <fieldset>
+    <legend>添加新用户</legend>
+    <form id="form">
+      <p>
+        <strong>姓名：</strong>
+        <input type="text" name="name" required>
+      </p>
+      <p>
+        <strong>年龄：</strong>
+        <input type="number" min="0" name="age">
+      </p>
+      <p>
+        <strong>性别：</strong>
+        <label><input type="radio" name="gender" value="男" checked>&nbsp;男</label>&nbsp;&nbsp;&nbsp;&nbsp;
+        <label><input type="radio" name="gender" value="女">&nbsp;女</label>
+      </p>
+      <p>
+        <strong>地址：</strong>
+        <input type="text" name="address">
+      </p>
+      <input type="submit" value="添加用户信息" class="btn btn-primary">
+    </form>
+  </fieldset>
+
+  <fieldset>
+    <legend>用户列表</legend>
+    <table class="table table-striped table-bordered table-hover">
+      <thead>
+        <tr>
+          <th>序号</th>
+          <th>姓名</th>
+          <th>年龄</th>
+          <th>性别</th>
+          <th>地址</th>
+          <th>操作</th>
+        </tr>
+      </thead>
+      <tbody>
+        <? users.forEach((item, i) => { ?>
+          <tr>
+            <td>
+              <?= (i+1) ?>
+            </td>
+            <td>
+              <?= item.name ?>
+            </td>
+            <td>
+              <?= item.age ?>
+            </td>
+            <td>
+              <?= item.gender ?>
+            </td>
+            <td>
+              <?= item.address ?>
+            </td>
+            <td>
+              <a href="/showInfo?id=<?= item.id ?>">查看</a>
+              <a href="/editUser?id=<?= item.id ?>">编辑</a>
+              <a href="/delUser?id=<?= item.id ?>" class="del">删除</a>
+            </td>
+          </tr>
+          <? }) ?>
+      </tbody>
+    </table>
+  </fieldset>
+
+  <script src="/node_modules/art-template/lib/template-web.js"></script>
+  <script id="tmpl" type="text/template">
+    {{ each users }}
+    <tr>
+      <td>
+        {{ $value.id }}
+      </td>
+      <td>
+        {{ $value.name }}
+      </td>
+      <td>
+        {{ $value.age }}
+      </td>
+      <td>
+        {{ $value.gender }}
+      </td>
+      <td>
+        {{ $value.address }}
+      </td>
+      <td>
+        <a href="/showInfo?id={{ $value.id }}">查看</a>
+        <a href="/editUser?id={{ $value.id }}">编辑</a>
+        <a href="/delUser?id={{ $value.id }}" class="del">删除</a>
+      </td>
+    </tr>
+    {{ /each }}
+  </script>
+
+  <script>
+    $(function () {
+      // 删除连接的点击事件
+      $('body').on('click', '.del', function (e) {
+        e.preventDefault();
+        $.ajax({
+          url: $(this).attr('href'),
+          type: 'get',
+          dataType: 'json',
+          success: function (result) {
+            var html = template('tmpl', result);
+            $('tbody').html(html);
+          }
+        });
+      });
+
+      $('#form').on('submit', function (e) {
+        e.preventDefault();
+        $.ajax({
+          url: '/addUser',
+          data: $(this).serialize(),
+          type: 'post',
+          dataType: 'json',
+          success: function (result) {
+            if (result.err_code === 0) {
+              var html = template('tmpl', result);
+              $('tbody').html(html);
+              $('#form')[0].reset();
+            }
+          }
+        });
+      });
+    });
+  </script>
+
+  <?- include('./footer.ejs') ?>
